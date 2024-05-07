@@ -25,44 +25,65 @@ class MainActivity : AppCompatActivity() {
         val radioFeminino = findViewById<RadioButton>(R.id.radio_feminino)
 
         btnConverter.setOnClickListener {
-            if (txtAno.text.isEmpty()) {
-                txtAno.error = "Digite a quantidade de ano(s)"
-            } else if (txtMes.text.isEmpty()) {
-                txtMes.error = "Digite a quantidade de mes(es)"
-            } else if (txtDia.text.isEmpty()) {
-                txtDia.error = "Digite a quantidade de dia(s)"
-            } else {
 
-                //Entrada de dados
-                val ano = txtAno.text.toString().toInt()
-                val mes = txtMes.text.toString().toInt()
-                val dia = txtDia.text.toString().toInt()
+            // Verifica se os campos estão preenchidos
+            when {
 
-                //Processamento de dados
-                val resultado = (ano * 365) + (mes * 30) + dia
-                val menorDeIdade = 6575
-
-                if(resultado < menorDeIdade) {
-                    txtResultado.text = "Você é menor de idade! \nA sua idade em dias é: $resultado"
-                } else {
-                    txtResultado.text = "Você é maior de idade! \nA sua idade em dias é: $resultado"
+                txtAno.text.isEmpty() -> {
+                    txtAno.error = "Digite a quantidade de ano(s)"
                 }
 
+                txtMes.text.isEmpty() -> {
+                    txtMes.error = "Digite a quantidade de mes(es)"
+                }
+
+                txtDia.text.isEmpty() -> {
+                    txtDia.error = "Digite a quantidade de dia(s)"
+                }
+
+                !radioMasculino.isChecked && !radioFeminino.isChecked -> {
+
+                    // pode ser txtSexo.error ou txtSexo.text
+                    txtSexo.text = "Selecione o seu sexo"
+                }
+
+                // Se todos os campos estiverem preenchidos, executa o restante do código
+                else -> {
+
+                    // Entrada de dados
+                    val ano = txtAno.text.toString().toInt()
+                    val mes = txtMes.text.toString().toInt()
+                    val dia = txtDia.text.toString().toInt()
+
+                    // Processamento de dados
+                    val resultado = (ano * 365) + (mes * 30) + dia
+                    val menorDeIdade = 6575
+
+                    // Checa a faixa etária do usuário
+                    txtResultado.text = if(resultado < menorDeIdade) {
+                        "Você é menor de idade! \nA sua idade em dias é: $resultado\n"
+                    }
+                    else {
+                        "Você é maior de idade! \nA sua idade em dias é: $resultado\n"
+                    }
+
+                    txtSexo.text = when {
+
+                        radioMasculino.isChecked -> {
+                            "Você é do sexo masculino e deve se alistar no exército!"
+                        }
+
+                        radioFeminino.isChecked -> {
+                            "Você é do sexo feminino e não precisa se alistar no exército!"
+                        }
+
+                        else -> {
+                            "Selecione o seu sexo"
+                        }
+                    }
+                }
             }
         }
-
-        radioMasculino.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) {
-                txtSexo.text = "Você é do sexo masculino e deve se alistar no exército!"
-            }
-        }
-
-        radioFeminino.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) {
-                txtSexo.text = "Você é do sexo feminino e não precisa se alistar no exército"
-            }
-        }
-
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
